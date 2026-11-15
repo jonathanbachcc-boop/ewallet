@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Carteira Digital - Depósito</title>
+  <style>
+    body { font-family: sans-serif; max-width: 420px; margin: 40px auto; }
+    input, button { display: block; width: 100%; margin: 8px 0; padding: 8px; }
+    #resultado { margin-top: 16px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>Carteira Digital</h1>
+  <h2>Depósito</h2>
+  <form id="form-deposito">
+    <input id="contaId" type="number" placeholder="ID da conta" required>
+    <input id="valor" type="number" step="0.01" placeholder="Valor" required>
+    <button id="btn-depositar" type="submit">Depositar</button>
+  </form>
+  <div id="resultado"></div>
+  <script>
+    document.getElementById('form-deposito').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('contaId').value;
+      const valor = parseFloat(document.getElementById('valor').value);
+      const out = document.getElementById('resultado');
+      const resp = await fetch('/contas/' + id + '/deposito', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ valor })
+      });
+      const data = await resp.json();
+      out.textContent = resp.ok ? 'Saldo atual: ' + data.saldo.toFixed(2) : 'Erro: ' + data.erro;
+    });
+  </script>
+</body>
+</html>
